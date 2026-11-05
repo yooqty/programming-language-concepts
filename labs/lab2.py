@@ -5,32 +5,29 @@ PI = 3.14159265358979323846
 TWO_PI = 2.0 * PI
 HALF_PI = PI / 2.0
 
-EPS = 1e-16  # порог остановки ряда
+EPS = 1e-16 # threshold for stopping the series
 
 
 def my_sin(x: float) -> float:
-    """
-    sin(x) через ряд Тейлора.
-    Используются только + - * / и целочисленные индексы.
-    """
-    # 1) Приводим x к [-pi, pi] через периодичность 2*pi
+
+    # 1) reduce x to [-pi, pi] using periodicity 2*pi
     if x > PI or x < -PI:
-        k = round(x / TWO_PI) # целое число периодов
+        k = round(x / TWO_PI) # integer number of periods
         x = x - k * TWO_PI
-    # 2) Приводим к [-pi/2, pi/2], используя симметрию синуса
+    # 2) reduce to [-pi/2, pi/2] using sine symmetry
     if x > HALF_PI:
         x = PI - x
     elif x < -HALF_PI:
         x = -PI - x
 
-    # 3) Ряд Тейлора с рекуррентным членом
-    term = x          # t_0 = x
-    s = x             # сумма
+    # 3) taylor series with a recurrent term
+    term = x # t_0 = x
+    s = x # sum
     x2 = x * x
-    n = 0             # индекс: (2n+1)!
+    n = 0 # index: (2n+1)!
     while True:
         # t_{n+1} = -t_n * x^2 / ((2n+2)(2n+3))
-        denom = (2 * n + 2) * (2 * n + 3)   # целые числа
+        denom = (2 * n + 2) * (2 * n + 3) # integer numbers
         term = -term * x2 / denom
         s += term
         if abs(term) < EPS:
@@ -42,7 +39,7 @@ def my_sin(x: float) -> float:
 def run_test():
     random.seed(42)
     N = 100
-    # 100 точек в диапазоне [-10, 10]
+    # 100 points in [-10, 10]
     xs = [random.uniform(-10.0, 10.0) for _ in range(N)]
 
     max_abs_err = 0.0
@@ -64,9 +61,9 @@ def run_test():
             print(f"{x:14.8f} | {a:18.15f} | {b:18.15f} | {abs_err:12.3e}")
 
     print("-" * 72)
-    print(f"Макс. абсолютная ошибка : {max_abs_err:.3e}  (при x = {worst_x:.6f})")
-    print(f"Макс. относительная ошибка: {max_rel_err:.3e}")
-    print(f"Машинный эпсилон double  : {2.220446049250313e-16:.3e}")
+    print(f"Max absolute error : {max_abs_err:.3e}  (at x = {worst_x:.6f})")
+    print(f"Max relative error : {max_rel_err:.3e}")
+    print(f"Double machine epsilon : {2.220446049250313e-16:.3e}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,12 @@
 import struct
 
 def float_to_bits(x):
-    """Возвращает 64-битное представление float как строку из 0 и 1."""
+    # return the 64-bit representation of a float as a string of 0s and 1s
     packed = struct.pack('>d', x)
     return ''.join(f'{b:08b}' for b in packed)
 
 def parse_float(x):
-    """Разбирает float на знак, экспоненту, мантиссу (IEEE 754 double)."""
+    # split a float into sign, exponent, mantissa (IEEE 754 double)
     bits = float_to_bits(x)
     sign = int(bits[0], 2)
     exponent = int(bits[1:12], 2)
@@ -14,9 +14,9 @@ def parse_float(x):
     return bits, sign, exponent, mantissa
 
 def reconstruct(sign, exponent, mantissa):
-    """Восстанавливает число из полей IEEE 754."""
+    # rebuild the number from IEEE 754 fields
     if exponent == 0:
-        # субнормальное число
+        # subnormal number
         if mantissa == 0:
             return -0.0 if sign else 0.0
         value = mantissa * 2.0 ** (-1022 - 52)
@@ -35,25 +35,25 @@ def print_row(label, n_or_k, x):
     print(f"           reconstructed = {rebuilt!r}  (equal: {rebuilt == x})\n")
 
 print("=" * 100)
-print("Последовательность 1:  1 + 1/(10^n)")
+print("Sequence 1:  1 + 1/(10^n)")
 print("=" * 100)
 n = 0
 while True:
     x = 1 + 1 / (10 ** n)
     print_row("n", n, x)
     if x == 1.0:
-        print(f">>> Остановка: при n = {n} результат равен 1.0\n")
+        print(f">>> Stop: at n = {n} the result equals 1.0\n")
         break
     n += 1
 
 print("=" * 100)
-print("Последовательность 2:  1 + 1/(2^k)")
+print("Sequence 2:  1 + 1/(2^k)")
 print("=" * 100)
 k = 0
 while True:
     x = 1 + 1 / (2 ** k)
     print_row("k", k, x)
     if x == 1.0:
-        print(f">>> Остановка: при k = {k} результат равен 1.0\n")
+        print(f">>> Stop: at k = {k} the result equals 1.0\n")
         break
     k += 1
